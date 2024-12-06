@@ -6,23 +6,27 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct WorkoutMenu: View {
-    @Binding var workout: Workout
+    @Environment(\.modelContext) var context
+    @Query var workouts: [Workout]
+    @State var workout: Workout = Workout()
+    @State var idx: Int
     @State var exercises: [Exercise] = []
-    @State var setsDone: Int = 0
     var body: some View {
         VStack() {
             Text(workout.name).font(.title)
             List{
                 ForEach($exercises){exercise in
                     VStack{
-                        ExerciseHorizontal(exercise: exercise, setsDone: $setsDone).padding(.vertical, 10)
-                        SetsList(exercise: exercise,setsDone: $setsDone)
+//                        ExerciseHorizontal(exercise: exercise, setsDone: ).padding(.vertical, 10)
+//                        SetsList(exercise: exercise, setsDone: )
                     }
                 }
             }
         }.onAppear(){
+            workout = workouts[idx]
             exercises = workout.exercises
         }
     }
@@ -104,7 +108,7 @@ struct SetsList: View{
 #Preview {
     let exercises: [Exercise] = [Exercise(name: "Exercise Name", description: "Description", reps: 5, sets: 3, weight: 1.2)]
     let workout: Workout = Workout(name: "Workout Name",exercises: exercises)
-    WorkoutMenu(workout: .constant(workout))
+    //WorkoutMenu(workout: .constant(workout))
 }
 #Preview {
     repsDonePopup(isShowing: .constant(true), repsDone: .constant(5))

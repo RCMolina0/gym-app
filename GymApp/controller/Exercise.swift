@@ -14,8 +14,8 @@ public class Exercise: Identifiable{
     var desc: String
     var reps: [Int]
     var sets: Int
-    var weight: Double
-    init(name: String, description: String, reps: [Int], sets: Int, weight: Double){
+    var weight: [Double]
+    init(name: String, description: String, reps: [Int], sets: Int, weight: [Double]){
         self.name = name
         self.desc = description
         self.reps = reps
@@ -29,16 +29,20 @@ public class Exercise: Identifiable{
         for _ in 1...sets{
             rep.append(reps)
         }
+        var weigt: [Double] = []
+        for _ in 1...sets{
+            weigt.append(weight)
+        }
+        self.weight = weigt
         self.reps = rep
         self.sets = sets
-        self.weight = weight
     }
     init(){
         self.name = ""
         self.desc = ""
         self.reps = [1]
         self.sets = 1
-        self.weight = 0.0
+        self.weight = [0.0]
     }
     func isEmpty() -> Bool{
         if name.isEmpty || desc.isEmpty{

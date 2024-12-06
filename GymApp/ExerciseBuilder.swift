@@ -15,13 +15,13 @@ struct ExerciseBuilder: View {
     @State var reps: [Int] = [1]
     @State var sets: Int = 1
     @State var showingAlert: Bool = false
-    @State var weight: Double?
+    @State var weight: [Double] = [0.0]
     var body: some View {
         Button("Click here to be done"){
-            if(name.isEmpty || description.isEmpty || weight == nil){
+            if(name.isEmpty || description.isEmpty){
                 showingAlert = true;
             }else{
-                exercise = Exercise(name: name, description: description, reps: reps, sets: sets, weight: weight!)
+                exercise = Exercise(name: name, description: description, reps: reps, sets: sets, weight: weight)
                 isPresented = false;
             }
         }.alert("Please enter a name and description",isPresented: $showingAlert){
@@ -29,25 +29,28 @@ struct ExerciseBuilder: View {
         List {
             TextField("Name", text: $name)
             TextField("Description", text: $description)
-            TextField("Weight", value: $weight,formatter: NumberFormatter()).keyboardType(.decimalPad)
             Button("Add Set"){
                 reps.append(1);
                 sets+=1;
+                weight.append(0.0);
             }
             ForEach(0..<sets, id: \.self){i in
                 VStack{
-                    TextField("Reps", value: $reps[i],formatter: NumberFormatter()).keyboardType(.decimalPad)
+                    HStack{
+                        TextField("Reps", value: $reps[i],formatter: NumberFormatter()).keyboardType(.numberPad)
+                        TextField("Weight", value: $weight[i],formatter: NumberFormatter()).keyboardType(.decimalPad)
+                    }
                 }
+            }.onAppear(){
+                name = exercise.name
+                description = exercise.desc
+                reps = exercise.reps
+                sets = exercise.sets
             }
-        }.onAppear(){
-            name = exercise.name
-            description = exercise.desc
-            reps = exercise.reps
-            sets = exercise.sets
         }
     }
 }
 
 #Preview {
-    ExerciseBuilder(exercise: .constant(Exercise()), isPresented: .constant(true))
+    //ExerciseBuilder(exercise: .constant(Exercise()), isPresented: .constant(true))
 }
