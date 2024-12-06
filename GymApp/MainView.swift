@@ -16,7 +16,7 @@ struct MainView: View {
             Tab("User Settings", systemImage: "gearshape"){
                 SettingsView()
             }
-        }
+        }.modelContainer(for: Workout.self)
     }
 }
 

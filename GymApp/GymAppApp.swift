@@ -13,7 +13,6 @@ struct GymAppApp: App {
         WindowGroup {
             MainView()
         }
-        .modelContainer(for: [Workout.self])
     }
 }
 
