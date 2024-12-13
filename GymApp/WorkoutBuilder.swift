@@ -21,11 +21,11 @@ struct WorkoutBuilder: View {
     var body: some View {
         Spacer()
         HStack{
-            Button("cancel"){
+            Button("Cancel"){
                 isShowing.toggle()
             }.tint(.red)
             Spacer()
-            Button("confirm"){
+            Button("Confirm"){
                 if(!name.isEmpty && !exercises.isEmpty){
                     workout.name = name
                     workout.exercises = exercises

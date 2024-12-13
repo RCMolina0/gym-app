@@ -17,7 +17,10 @@ struct WorkoutMenu: View {
     @State var setsDone: [Int] = []
     var body: some View {
         VStack() {
-            Text(workout.name).font(.title)
+            HStack{
+                Text(workout.name).font(.title).bold()
+                Spacer()
+            }.padding(.horizontal, 20)
             List{
                 ForEach($exercises){exercise in
                     Section(header: Text(exercise.wrappedValue.name)){
