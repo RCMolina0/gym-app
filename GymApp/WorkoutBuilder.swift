@@ -19,64 +19,76 @@ struct WorkoutBuilder: View {
     @State var isShowingExerciseBuilderEdit: Bool = false
     @State var showingAlert: Bool = false
     var body: some View {
-        Button("yes"){
-            if(!name.isEmpty && !exercises.isEmpty){
-                workout.name = name
-                workout.exercises = exercises
+        Spacer()
+        HStack{
+            Button("cancel"){
                 isShowing.toggle()
-            }else{
-                showingAlert = true;
+            }.tint(.red)
+            Spacer()
+            Button("confirm"){
+                if(!name.isEmpty && !exercises.isEmpty){
+                    workout.name = name
+                    workout.exercises = exercises
+                    isShowing.toggle()
+                }else{
+                    showingAlert = true;
+                }
+            }.alert("Please enter a name and at least one exercise",isPresented: $showingAlert){
+                
             }
-        }.alert("Please enter a name and at least one exercise",isPresented: $showingAlert){
-        }
+        }.padding(.top).padding(.horizontal)
         List{
-            HStack{Text("Name:")
-                TextField("Name", text: $name)}
-            ForEach(exercises){exercise in
-                Text(exercise.name).swipeActions {
-                    Button(action:{workout.exercises.remove(at: workout.exercises.firstIndex(of: exercise)!)
-                        exercises = workout.exercises
-                    }){
-                        Image(systemName: "trash")
-                    }.tint(.red)
-                    Button(action:{newExercise = exercise
-                        id = workout.exercises.firstIndex(of: exercise)!
-                        isShowingExerciseBuilderEdit = true
-                    }){
-                        Image(systemName: "pencil")
-                    }.tint(.blue)
-                }
-            }.popover(isPresented: $isShowingExerciseBuilderEdit){
-                ExerciseBuilder(exercise: $newExercise, isPresented: $isShowingExerciseBuilderEdit).onDisappear(){
-                    if(!newExercise.isEmpty()){
-                        print("on disappeared")
-                        workout.exercises.remove(at: id)
-                        workout.exercises.insert(newExercise, at: id)
-                        exercises = workout.exercises
-                    }
-                }
+            Section(header: Text("")){
+                HStack{Text("Name:")
+                    TextField("Name", text: $name)}
             }
-            Button("Add exercise"){
-                newExercise = Exercise()
-                isShowingExerciseBuilder.toggle()
-            }.popover(isPresented: $isShowingExerciseBuilder){
-                ExerciseBuilder(exercise: $newExercise, isPresented: $isShowingExerciseBuilder)
-                    .onDisappear(){
+            Section(header: Text("Exercises")){
+                ForEach(exercises){exercise in
+                    Text(exercise.name).swipeActions {
+                        Button(action:{workout.exercises.remove(at: workout.exercises.firstIndex(of: exercise)!)
+                            exercises = workout.exercises
+                        }){
+                            Image(systemName: "trash")
+                        }.tint(.red)
+                        Button(action:{newExercise = exercise
+                            id = workout.exercises.firstIndex(of: exercise)!
+                            isShowingExerciseBuilderEdit = true
+                        }){
+                            Image(systemName: "pencil")
+                        }.tint(.blue)
+                    }
+                }.popover(isPresented: $isShowingExerciseBuilderEdit){
+                    ExerciseBuilder(exercise: $newExercise, isPresented: $isShowingExerciseBuilderEdit).onDisappear(){
                         if(!newExercise.isEmpty()){
-                            workout.exercises.append(newExercise)
+                            print("on disappeared")
+                            workout.exercises.remove(at: id)
+                            workout.exercises.insert(newExercise, at: id)
                             exercises = workout.exercises
                         }
+                    }
                 }
-            }.onDisappear(){
-                if(!newExercise.isEmpty()){
-                    exercises.append(newExercise)
-                    workout.exercises.append(newExercise)
+                Button("Add exercise"){
+                    newExercise = Exercise()
+                    isShowingExerciseBuilder.toggle()
+                }.popover(isPresented: $isShowingExerciseBuilder){
+                    ExerciseBuilder(exercise: $newExercise, isPresented: $isShowingExerciseBuilder)
+                        .onDisappear(){
+                            if(!newExercise.isEmpty()){
+                                workout.exercises.append(newExercise)
+                                exercises = workout.exercises
+                            }
+                    }
+                }.onDisappear(){
+                    if(!newExercise.isEmpty()){
+                        exercises.append(newExercise)
+                        workout.exercises.append(newExercise)
+                    }
                 }
             }
         }.onAppear{
             name = workout.name
             exercises = workout.exercises
-        }.padding(.top)
+        }
     }
 }
 

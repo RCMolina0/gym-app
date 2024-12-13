@@ -20,10 +20,12 @@ struct WorkoutMenu: View {
             Text(workout.name).font(.title)
             List{
                 ForEach($exercises){exercise in
-                    let id:Int = exercises.firstIndex(of: exercise.wrappedValue)!
-                    VStack{
-                        ExerciseHorizontal(exercise: exercise, setsDone: $setsDone[id]).padding(.vertical, 10)
-                        SetsList(exercise: exercise, setsDone: $setsDone[id])
+                    Section(header: Text(exercise.wrappedValue.name)){
+                        let id:Int = exercises.firstIndex(of: exercise.wrappedValue)!
+                        VStack{
+                            ExerciseHorizontal(exercise: exercise, setsDone: $setsDone[id]).padding(.vertical, 10)
+                            SetsList(exercise: exercise, setsDone: $setsDone[id])
+                        }
                     }
                 }
             }
@@ -45,7 +47,6 @@ struct ExerciseHorizontal: View{
     @State var isShowing:Bool = false
     var body: some View{
         HStack{
-            Text(exercise.name).padding(.horizontal, 10)
             ProgressView(value: Double(setsDone), total: Double(exercise.sets))
             Button(action:{
                 if(setsDone != exercise.sets){
@@ -58,7 +59,7 @@ struct ExerciseHorizontal: View{
                 Image(systemName: "checkmark").tint(.green)
             }.padding(.horizontal, 10)
         }.sheet(isPresented: $isShowing){
-            repsDonePopup(isShowing: $isShowing, repsDone: $repsDone, weightDone: $weightDone).presentationDetents([.fraction(0.25)]).onDisappear{
+            repsDonePopup(isShowing: $isShowing, repsDone: $repsDone, weightDone: $weightDone).presentationDetents([.fraction(0.35)]).onDisappear{
                 exercise.reps[setsDone-1] = repsDone
                 exercise.weight[setsDone-1] = weightDone
             }
@@ -77,13 +78,21 @@ struct repsDonePopup: View{
             VStack{
                 Text("Enter the amount of reps done").font(.headline)
                 HStack{
-                    TextField("reps", value: $repsDoneLocal,formatter: NumberFormatter()).frame(width: 100).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).multilineTextAlignment(.center)
+                    HStack{
+                        Spacer()
+                        Text("Reps")
+                        TextField("reps", value: $repsDoneLocal,formatter: NumberFormatter()).keyboardType(.numberPad)
+                    }.frame(width: 150).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).multilineTextAlignment(.center)
                     Button("", systemImage: "checkmark", action:{
                         repsDone = repsDoneLocal
                     }).padding(.horizontal, 10).background(Color.green).clipShape(RoundedRectangle(cornerRadius: 10)).tint(.white).font(.headline)
                 }.padding()
                 HStack{
-                    TextField("weight", value: $weightDoneLocal,formatter: NumberFormatter()).frame(width: 100).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).multilineTextAlignment(.center)
+                    HStack{
+                        Spacer()
+                        Text("Weight")
+                        TextField("weight", value: $weightDoneLocal,formatter: NumberFormatter()).keyboardType(.decimalPad)
+                    }.frame(width: 150).background(Color.gray).clipShape(RoundedRectangle(cornerRadius: 10)).multilineTextAlignment(.center)
                     Button("", systemImage: "checkmark", action:{
                         weightDone = weightDoneLocal
                     }).padding(.horizontal, 10).background(Color.green).clipShape(RoundedRectangle(cornerRadius: 10)).tint(.white).font(.headline)
@@ -108,6 +117,7 @@ struct SetsList: View{
             ForEach(0..<exercise.reps.count, id: \.self){ i in
                 HStack{
                     Text("\(exercise.reps[i]) reps")
+                    Text("\(exercise.weight[i], specifier: "%.2f") lbs")
                     Spacer()
                     if(setsDone < i+1){
                         Image(systemName: "checkmark.circle")
@@ -118,11 +128,6 @@ struct SetsList: View{
             }
         }
     }
-}
-#Preview {
-    let exercises: [Exercise] = [Exercise(name: "Exercise Name", description: "Description", reps: 5, sets: 3, weight: 1.2)]
-    let workout: Workout = Workout(name: "Workout Name",exercises: exercises)
-    //WorkoutMenu(workout: .constant(workout))
 }
 #Preview {
     repsDonePopup(isShowing: .constant(true), repsDone: .constant(5), weightDone: .constant(0.0))

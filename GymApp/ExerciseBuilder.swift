@@ -17,29 +17,42 @@ struct ExerciseBuilder: View {
     @State var showingAlert: Bool = false
     @State var weight: [Double] = [0.0]
     var body: some View {
-        Button("Click here to be done"){
-            if(name.isEmpty || description.isEmpty){
-                showingAlert = true;
-            }else{
-                exercise = Exercise(name: name, description: description, reps: reps, sets: sets, weight: weight)
-                isPresented = false;
+        HStack {
+            Button("cancel"){
+                isPresented = false
+            }.tint(.red)
+            Spacer()
+            Button("confirm"){
+                if(name.isEmpty || description.isEmpty){
+                    showingAlert = true;
+                }else{
+                    exercise = Exercise(name: name, description: description, reps: reps, sets: sets, weight: weight)
+                    isPresented = false;
+                }
+            }.alert("Please enter a name and description",isPresented: $showingAlert){
             }
-        }.alert("Please enter a name and description",isPresented: $showingAlert){
-        }
+        }.padding(.top).padding(.horizontal)
         List {
-            TextField("Name", text: $name)
-            TextField("Description", text: $description)
-            Button("Add Set"){
-                reps.append(1);
-                sets+=1;
-                weight.append(0.0);
+            Section(header: Text("")){
+                TextField("Name", text: $name)
+                TextField("Description", text: $description)
             }
-            ForEach(0..<sets, id: \.self){i in
-                VStack{
-                    HStack{
-                        TextField("Reps", value: $reps[i],formatter: NumberFormatter()).keyboardType(.numberPad)
-                        TextField("Weight", value: $weight[i],formatter: NumberFormatter()).keyboardType(.decimalPad)
+            Section(header: Text("Sets")){
+                ForEach(0..<sets, id: \.self){i in
+                    VStack{
+                        HStack{
+                            Text("Reps: ")
+                            TextField("Reps", value: $reps[i],formatter: NumberFormatter()).keyboardType(.numberPad)
+                            Text("Weight: ")
+                            TextField("Weight", value: $weight[i],formatter: NumberFormatter()).keyboardType(.decimalPad)
+                            Text("lbs")
+                        }
                     }
+                }
+                Button("Add Set"){
+                    reps.append(1);
+                    sets+=1;
+                    weight.append(0.0);
                 }
             }.onAppear(){
                 name = exercise.name
@@ -52,5 +65,5 @@ struct ExerciseBuilder: View {
 }
 
 #Preview {
-    //ExerciseBuilder(exercise: .constant(Exercise()), isPresented: .constant(true))
+    ExerciseBuilder(exercise: .constant(Exercise()), isPresented: .constant(true))
 }
