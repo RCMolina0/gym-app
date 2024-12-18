@@ -12,7 +12,9 @@ struct WorkoutsView: View {
     
     @Query var workouts: [Workout]
     @State var isShowingBuilder: Bool = false
+    @State var isShowingEdit: Bool = false
     @State var newWorkout: Workout = Workout()
+    @State var workoutEdit: Workout = Workout()
     var body: some View {
         ZStack {
             NavigationStack{
@@ -20,11 +22,17 @@ struct WorkoutsView: View {
                     ForEach(workouts){workout in
                         NavigationLink(destination: WorkoutMenu(idx: workouts.firstIndex(of: workout) ?? 0)){
                             Text(workout.name).swipeActions {
-                            Button(action:{
-                                context.delete(workout)
-                            }){
-                                Image(systemName: "trash")
-                            }.tint(.red)
+                                Button(action:{
+                                    context.delete(workout)
+                                }){
+                                    Image(systemName: "trash")
+                                }.tint(.red)
+                                Button(action:{
+                                    workoutEdit = workout
+                                    isShowingEdit.toggle()
+                                }){
+                                    Image(systemName: "pencil")
+                                }.tint(.blue)
                         }
                         }
                     }
@@ -37,6 +45,8 @@ struct WorkoutsView: View {
                                 context.insert(newWorkout)
                             }
                         }
+                    }.popover(isPresented: $isShowingEdit){
+                        WorkoutBuilder(workout: $workoutEdit, isShowing: $isShowingEdit)
                     }
                 }.navigationTitle("Workouts")
             }
