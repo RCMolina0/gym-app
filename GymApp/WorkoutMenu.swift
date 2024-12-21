@@ -10,9 +10,9 @@ import SwiftData
 
 struct WorkoutMenu: View {
     @Environment(\.modelContext) var context
+    @Environment(\.dismiss) var dismiss 
     @Query var workouts: [Workout]
-    @State var workout: Workout = Workout()
-    @State var idx: Int
+    @State var workout: Workout
     @State var exercises: [Exercise] = []
     @State var setsDone: [Int] = []
     var body: some View {
@@ -33,11 +33,18 @@ struct WorkoutMenu: View {
                 }
             }
         }.onAppear(){
-            workout = workouts[idx]
             exercises = workout.exercises
             for _ in 0...exercises.count-1{
                 setsDone.append(0)
             }
+        }.onChange(of: setsDone){
+            //confirms that all sets have been completed
+            for i in 0...exercises.count-1{
+                if(setsDone[i] < exercises[i].sets){
+                    return
+                }
+            }
+            dismiss()
         }
     }
 }
@@ -53,18 +60,23 @@ struct ExerciseHorizontal: View{
             ProgressView(value: Double(setsDone), total: Double(exercise.sets))
             Button(action:{
                 if(setsDone != exercise.sets){
-                    setsDone += 1;
-                    repsDone = exercise.reps[setsDone-1]
-                    weightDone = exercise.weight[setsDone-1]
-                    isShowing = true;
+                    isShowing = true
                 }
             }){
                 Image(systemName: "checkmark").tint(.green)
             }.padding(.horizontal, 10)
+            //sheet that displays reps and weigth change popup
         }.sheet(isPresented: $isShowing){
             repsDonePopup(isShowing: $isShowing, repsDone: $repsDone, weightDone: $weightDone).presentationDetents([.fraction(0.35)]).onDisappear{
                 exercise.reps[setsDone-1] = repsDone
                 exercise.weight[setsDone-1] = weightDone
+            }
+            //when change reps and weight popup is done showing
+        }.onChange(of: isShowing){
+            if(isShowing == false){
+                setsDone += 1;
+                repsDone = exercise.reps[setsDone-1]
+                weightDone = exercise.weight[setsDone-1]
             }
         }
     }
@@ -90,6 +102,7 @@ struct repsDonePopup: View{
                         repsDone = repsDoneLocal
                     }).padding(.horizontal, 10).background(Color.green).clipShape(RoundedRectangle(cornerRadius: 10)).tint(.white).font(.headline)
                 }.padding()
+                //hstack with weight input
                 HStack{
                     HStack{
                         Spacer()

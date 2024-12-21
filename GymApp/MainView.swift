@@ -7,16 +7,31 @@
 
 import SwiftUI
 
+extension UserDefaults{
+    var UserCreationScreenShown: Bool{
+        get{
+            return (UserDefaults.standard.value(forKey: "UserCreationScreenShown") as? Bool) ?? false
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "UserCreationScreenShown")
+        }
+    }
+}
+
 struct MainView: View {
     var body: some View {
-        TabView{
-            Tab("Workouts", systemImage: "figure.strengthtraining.traditional"){
-                WorkoutsView()
+        if !UserDefaults.standard.UserCreationScreenShown{
+            UserSetup()
+        }else{
+            TabView{
+                Tab("Workouts", systemImage: "figure.strengthtraining.traditional"){
+                    WorkoutsView()
+                }
+                Tab("User Settings", systemImage: "gearshape"){
+                    SettingsView()
+                }
             }
-            Tab("User Settings", systemImage: "gearshape"){
-                SettingsView()
-            }
-        }.modelContainer(for: Workout.self)
+        }
     }
 }
 

@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SettingsView: View {
+    @Query var user: [User] //saved workouts
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text(user.first!.name)
     }
 }
 

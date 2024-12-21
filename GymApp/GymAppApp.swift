@@ -12,7 +12,7 @@ struct GymAppApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()
-        }
+        }.modelContainer(for: User.self)
     }
 }
 

@@ -8,22 +8,23 @@ import SwiftUI
 import SwiftData
 
 struct WorkoutsView: View {
-    @Environment(\.modelContext) var context
-    
-    @Query var workouts: [Workout]
-    @State var isShowingBuilder: Bool = false
-    @State var isShowingEdit: Bool = false
-    @State var newWorkout: Workout = Workout()
-    @State var workoutEdit: Workout = Workout()
+    @Environment(\.modelContext) var context //needed to save and remove workouts
+    @Query var user: [User] //saved workouts
+    @State var workouts: [Workout] = []
+    @State var isShowingBuilder: Bool = false //tells when to display workout maker
+    @State var isShowingEdit: Bool = false //tells when to display editor
+    @State var newWorkout: Workout = Workout() //holds the new workout
+    @State var workoutEdit: Workout = Workout() //holds edited workout
     var body: some View {
         ZStack {
             NavigationStack{
                 List {
+                    //go through each workout and make it a nav link with an edit and delete button
                     ForEach(workouts){workout in
-                        NavigationLink(destination: WorkoutMenu(idx: workouts.firstIndex(of: workout) ?? 0)){
+                        NavigationLink(destination: WorkoutMenu(workout: workout)){
                             Text(workout.name).swipeActions {
                                 Button(action:{
-                                    context.delete(workout)
+                                    workouts.remove(at: workouts.firstIndex(of: workout)!)
                                 }){
                                     Image(systemName: "trash")
                                 }.tint(.red)
@@ -42,13 +43,15 @@ struct WorkoutsView: View {
                     }.popover(isPresented: $isShowingBuilder){
                         WorkoutBuilder(workout: $newWorkout, isShowing: $isShowingBuilder).onDisappear(){
                             if(!newWorkout.isEmpty()){
-                                context.insert(newWorkout)
+                                workouts.append(newWorkout)
                             }
                         }
                     }.popover(isPresented: $isShowingEdit){
                         WorkoutBuilder(workout: $workoutEdit, isShowing: $isShowingEdit)
                     }
-                }.navigationTitle("Workouts")
+                }.navigationTitle("Workouts").onAppear(){
+                    workouts = user.first!.workouts
+                }
             }
         }
     }
