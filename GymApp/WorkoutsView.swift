@@ -25,6 +25,7 @@ struct WorkoutsView: View {
                             Text(workout.name).swipeActions {
                                 Button(action:{
                                     workouts.remove(at: workouts.firstIndex(of: workout)!)
+                                    user.first!.workouts = workouts
                                 }){
                                     Image(systemName: "trash")
                                 }.tint(.red)
@@ -44,6 +45,7 @@ struct WorkoutsView: View {
                         WorkoutBuilder(workout: $newWorkout, isShowing: $isShowingBuilder).onDisappear(){
                             if(!newWorkout.isEmpty()){
                                 workouts.append(newWorkout)
+                                user.first!.workouts = workouts
                             }
                         }
                     }.popover(isPresented: $isShowingEdit){

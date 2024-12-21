@@ -60,6 +60,8 @@ struct ExerciseHorizontal: View{
             ProgressView(value: Double(setsDone), total: Double(exercise.sets))
             Button(action:{
                 if(setsDone != exercise.sets){
+                    repsDone = exercise.reps[setsDone]
+                    weightDone = exercise.weight[setsDone]
                     isShowing = true
                 }
             }){
@@ -68,16 +70,11 @@ struct ExerciseHorizontal: View{
             //sheet that displays reps and weigth change popup
         }.sheet(isPresented: $isShowing){
             repsDonePopup(isShowing: $isShowing, repsDone: $repsDone, weightDone: $weightDone).presentationDetents([.fraction(0.35)]).onDisappear{
+                setsDone += 1;
                 exercise.reps[setsDone-1] = repsDone
                 exercise.weight[setsDone-1] = weightDone
             }
             //when change reps and weight popup is done showing
-        }.onChange(of: isShowing){
-            if(isShowing == false){
-                setsDone += 1;
-                repsDone = exercise.reps[setsDone-1]
-                weightDone = exercise.weight[setsDone-1]
-            }
         }
     }
 }

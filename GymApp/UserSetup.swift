@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct UserSetup: View {
+    @AppStorage("UserCreationScreenShown")
+    var UserCreationScreenShown: Bool = false;
     @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var context //needed to save and remove workouts
     @State var UserName: String = ""
@@ -23,8 +25,7 @@ struct UserSetup: View {
                 Button("Done"){
                     if(UserName != ""){
                         context.insert(User(name: UserName))
-                        UserDefaults.standard.set(true, forKey: "UserCreationScreenShown")
-                        dismiss()
+                        UserCreationScreenShown = true
                     }
                 }
             }.padding()

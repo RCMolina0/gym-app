@@ -7,20 +7,12 @@
 
 import SwiftUI
 
-extension UserDefaults{
-    var UserCreationScreenShown: Bool{
-        get{
-            return (UserDefaults.standard.value(forKey: "UserCreationScreenShown") as? Bool) ?? false
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "UserCreationScreenShown")
-        }
-    }
-}
-
 struct MainView: View {
+    @AppStorage("UserCreationScreenShown")
+    var UserCreationScreenShown: Bool = false
+    
     var body: some View {
-        if !UserDefaults.standard.UserCreationScreenShown{
+        if !UserCreationScreenShown{
             UserSetup()
         }else{
             TabView{
