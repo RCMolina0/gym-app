@@ -10,8 +10,19 @@ import SwiftData
 
 struct SettingsView: View {
     @Query var user: [User] //saved workouts
+    @State var editName: String = ""
     var body: some View {
-        Text(user.first!.name)
+        VStack{
+            Text("Hello \(user.first!.name)!")
+                .font(.headline)
+            Spacer()
+            HStack {
+                TextField(user.first!.name, text: $editName)
+                Button("Change Name"){
+                    user.first!.name = editName
+                }
+            }.padding()
+        }.padding(.vertical)
     }
 }
 
