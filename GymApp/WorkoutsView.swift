@@ -32,6 +32,9 @@ struct WorkoutsView: View {
                                 Button(action:{
                                     workoutEdit = workout
                                     isShowingEdit.toggle()
+                                    if(user.first!.isWorkingout()){
+                                        user.first!.endWorkout()
+                                    }
                                 }){
                                     Image(systemName: "pencil")
                                 }.tint(.blue)

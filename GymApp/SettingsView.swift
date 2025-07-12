@@ -20,6 +20,7 @@ struct SettingsView: View {
                 TextField(user.first!.name, text: $editName)
                 Button("Change Name"){
                     user.first!.name = editName
+                    editName = ""
                 }
             }.padding()
         }.padding(.vertical)

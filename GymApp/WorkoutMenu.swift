@@ -10,41 +10,49 @@ import SwiftData
 
 struct WorkoutMenu: View {
     @Environment(\.modelContext) var context
-    @Environment(\.dismiss) var dismiss 
-    @Query var workouts: [Workout]
+    @Environment(\.dismiss) var dismiss
+    @Query var user: [User]
     @State var workout: Workout
     @State var exercises: [Exercise] = []
     @State var setsDone: [Int] = []
+    @State var isDone: Bool = false
     var body: some View {
-        VStack() {
-            HStack{
+        VStack{ //vstack that holds the workout title and exercises
+            HStack{ //creates the title that mirrors the style of the navmenu
                 Text(workout.name).font(.title).bold()
                 Spacer()
+                if (isDone == true){
+                    Button("Done"){
+                        user.first!.endWorkout()
+                        dismiss()
+                    }
+                }
             }.padding(.horizontal, 20)
             List{
                 ForEach($exercises){exercise in
-                    Section(header: Text(exercise.wrappedValue.name)){
-                        let id:Int = exercises.firstIndex(of: exercise.wrappedValue)!
+                    Section(header: Text(exercise.wrappedValue.name)){//creates a new section with the header of the exercise name
+                        let id:Int = exercises.firstIndex(of: exercise.wrappedValue)! //index of the exercise
                         VStack{
-                            ExerciseHorizontal(exercise: exercise, setsDone: $setsDone[id]).padding(.vertical, 10)
-                            SetsList(exercise: exercise, setsDone: $setsDone[id])
+                            ExerciseHorizontal(exercise: exercise, setsDone: $setsDone[id]).padding(.vertical, 10) //progressbar and other things
+                            SetsList(exercise: exercise, setsDone: $setsDone[id]) //lists the sets in order
                         }
                     }
                 }
             }
         }.onAppear(){
-            exercises = workout.exercises
-            for _ in 0...exercises.count-1{
-                setsDone.append(0)
+            if(!user.first!.isWorkingout()){
+                user.first!.startWorkout(workout: workout)
             }
+            exercises = user.first!.getCurrentWorkout()!.exercises //make the exercises the ones passed in
+            setsDone = user.first!.getSetsDone()
         }.onChange(of: setsDone){
-            //confirms that all sets have been completed
+            user.first!.updateSetsDone(setsDone)
             for i in 0...exercises.count-1{
                 if(setsDone[i] < exercises[i].sets){
                     return
                 }
             }
-            dismiss()
+            isDone = true
         }
     }
 }

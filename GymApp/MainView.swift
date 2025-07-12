@@ -16,6 +16,9 @@ struct MainView: View {
             UserSetup()
         }else{
             TabView{
+                Tab("History", systemImage: "chart.line.uptrend.xyaxis"){
+                    HistoryView()
+                }
                 Tab("Workouts", systemImage: "figure.strengthtraining.traditional"){
                     WorkoutsView()
                 }
