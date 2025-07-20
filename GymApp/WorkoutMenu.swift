@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import ConfettiSwiftUI
 
 struct WorkoutMenu: View {
     @Environment(\.modelContext) var context
@@ -16,6 +17,8 @@ struct WorkoutMenu: View {
     @State var exercises: [Exercise] = []
     @State var setsDone: [Int] = []
     @State var isDone: Bool = false
+    @State var DonePopupPresented: Bool = false
+    @State var workoutTime: TimeInterval = TimeInterval()
     var body: some View {
         VStack{ //vstack that holds the workout title and exercises
             HStack{ //creates the title that mirrors the style of the navmenu
@@ -23,11 +26,13 @@ struct WorkoutMenu: View {
                 Spacer()
                 if (isDone == true){
                     Button("Done"){
-                        user.first!.endWorkout()
-                        dismiss()
+                        workoutTime = user.first!.endWorkout()
+                        DonePopupPresented = true
                     }
                 }
-            }.padding(.horizontal, 20)
+            }.padding(.horizontal, 20).popover(isPresented: $DonePopupPresented){
+                DonePopup(isShowing: $DonePopupPresented, time: workoutTime)
+            }
             List{
                 ForEach($exercises){exercise in
                     Section(header: Text(exercise.wrappedValue.name)){//creates a new section with the header of the exercise name
@@ -53,6 +58,11 @@ struct WorkoutMenu: View {
                 }
             }
             isDone = true
+        }.onChange(of: DonePopupPresented){
+            //can only happen if user dismisses workout ending popover so dismiss
+            if DonePopupPresented == false{
+                dismiss()
+            }
         }
     }
 }
@@ -118,9 +128,12 @@ struct repsDonePopup: View{
                         weightDone = weightDoneLocal
                     }).padding(.horizontal, 10).background(Color.green).clipShape(RoundedRectangle(cornerRadius: 10)).tint(.white).font(.headline)
                 }.padding()
-                Button("Don't Change Anything"){
+                Button{
                     isShowing.toggle()
-                }.frame(width: UIScreen.main.bounds.width-10, height: 50).background(Color.green).cornerRadius(20).tint(.white).font(.headline).onAppear(){
+                }label:{
+                    Text("Don't Change Anything")
+                        .frame(width: UIScreen.main.bounds.width-10, height: 50).background(Color.green).cornerRadius(20).tint(.white).font(.headline)
+                }.contentShape(Rectangle()).onAppear(){
                     repsDoneLocal = repsDone
                 }
             }
@@ -150,6 +163,21 @@ struct SetsList: View{
         }
     }
 }
+
+struct DonePopup: View{
+    @Binding var isShowing: Bool
+    @State var time: TimeInterval
+    @State var trigger: Int = 0
+    var body: some View{
+        VStack{
+            Text("Congratulations").font(.largeTitle).confettiCannon(trigger: $trigger, num: 50, openingAngle: Angle(degrees: 0), closingAngle: Angle(degrees: 360), radius: 200)
+            Text("You workout out for \(Duration.seconds(time).formatted(.units(allowed: [.minutes,.seconds],width: .wide)))")
+        }.onAppear(){
+            trigger += 1
+        }
+    }
+}
+
 #Preview {
     repsDonePopup(isShowing: .constant(true), repsDone: .constant(5), weightDone: .constant(0.0))
 }

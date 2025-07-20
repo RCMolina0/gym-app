@@ -99,3 +99,4 @@ struct WorkoutBuilder: View {
 #Preview {
     WorkoutBuilder(workout: .constant(Workout()), isShowing: .constant(true))
 }
+

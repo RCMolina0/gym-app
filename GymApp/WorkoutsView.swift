@@ -19,44 +19,50 @@ struct WorkoutsView: View {
         ZStack {
             NavigationStack{
                 List {
-                    //go through each workout and make it a nav link with an edit and delete button
-                    ForEach(workouts){workout in
-                        NavigationLink(destination: WorkoutMenu(workout: workout)){
-                            Text(workout.name).swipeActions {
-                                Button(action:{
-                                    workouts.remove(at: workouts.firstIndex(of: workout)!)
-                                    user.first!.workouts = workouts
-                                }){
-                                    Image(systemName: "trash")
-                                }.tint(.red)
-                                Button(action:{
-                                    workoutEdit = workout
-                                    isShowingEdit.toggle()
-                                    if(user.first!.isWorkingout()){
-                                        user.first!.endWorkout()
-                                    }
-                                }){
-                                    Image(systemName: "pencil")
-                                }.tint(.blue)
+                    if(user.first!.isWorkingout()){
+                        NavigationLink(destination: WorkoutMenu(workout: user.first!.getCurrentWorkout()!)){
+                            Text(user.first!.getCurrentWorkout()!.name)
                         }
-                        }
-                    }
-                    Button("Add Workout") {
-                        newWorkout = Workout()
-                        isShowingBuilder.toggle()
-                    }.popover(isPresented: $isShowingBuilder){
-                        WorkoutBuilder(workout: $newWorkout, isShowing: $isShowingBuilder).onDisappear(){
-                            if(!newWorkout.isEmpty()){
-                                workouts.append(newWorkout)
-                                user.first!.workouts = workouts
+                    }else{
+                        //go through each workout and make it a nav link with an edit and delete button
+                        ForEach(workouts){workout in
+                            NavigationLink(destination: WorkoutMenu(workout: workout)){
+                                Text(workout.name).swipeActions {
+                                    Button(action:{
+                                        workouts.remove(at: workouts.firstIndex(of: workout)!)
+                                        user.first!.workouts = workouts
+                                    }){
+                                        Image(systemName: "trash")
+                                    }.tint(.red)
+                                    Button(action:{
+                                        workoutEdit = workout
+                                        isShowingEdit.toggle()
+                                        if(user.first!.isWorkingout()){
+                                            user.first!.endWorkout()
+                                        }
+                                    }){
+                                        Image(systemName: "pencil")
+                                    }.tint(.blue)
+                                }
                             }
                         }
-                    }.popover(isPresented: $isShowingEdit){
-                        WorkoutBuilder(workout: $workoutEdit, isShowing: $isShowingEdit)
                     }
-                }.navigationTitle("Workouts").onAppear(){
-                    workouts = user.first!.workouts
-                }
+                        Button("Add Workout") {
+                            newWorkout = Workout()
+                            isShowingBuilder.toggle()
+                        }.popover(isPresented: $isShowingBuilder){
+                            WorkoutBuilder(workout: $newWorkout, isShowing: $isShowingBuilder).onDisappear(){
+                                if(!newWorkout.isEmpty()){
+                                    workouts.append(newWorkout)
+                                    user.first!.workouts = workouts
+                                }
+                            }
+                        }.popover(isPresented: $isShowingEdit){
+                            WorkoutBuilder(workout: $workoutEdit, isShowing: $isShowingEdit)
+                        }.navigationTitle("Workouts").onAppear(){
+                            workouts = user.first!.workouts
+                        }
+                    }
             }
         }
     }

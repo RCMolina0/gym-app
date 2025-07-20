@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E19C62C72E2C699E00AEE895 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = E19C62C62E2C699E00AEE895 /* ConfettiSwiftUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E1DD923D2CF5209B007F0294 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E19C62C72E2C699E00AEE895 /* ConfettiSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,12 +77,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E19C62C52E2C699E00AEE895 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E1DD92232CF5209A007F0294 = {
 			isa = PBXGroup;
 			children = (
 				E1DD922E2CF5209A007F0294 /* GymApp */,
 				E1DD923F2CF5209B007F0294 /* GymAppTests */,
 				E1DD92492CF5209C007F0294 /* GymAppUITests */,
+				E19C62C52E2C699E00AEE895 /* Frameworks */,
 				E1DD922D2CF5209A007F0294 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -112,6 +125,7 @@
 			);
 			name = GymApp;
 			packageProductDependencies = (
+				E19C62C62E2C699E00AEE895 /* ConfettiSwiftUI */,
 			);
 			productName = GymApp;
 			productReference = E1DD922C2CF5209A007F0294 /* GymApp.app */;
@@ -195,6 +209,9 @@
 			);
 			mainGroup = E1DD92232CF5209A007F0294;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				E19C62C42E2C692F00AEE895 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E1DD922D2CF5209A007F0294 /* Products */;
 			projectDirPath = "";
@@ -556,6 +573,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E19C62C42E2C692F00AEE895 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E19C62C62E2C699E00AEE895 /* ConfettiSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E19C62C42E2C692F00AEE895 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
+			productName = ConfettiSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E1DD92242CF5209A007F0294 /* Project object */;
 }
