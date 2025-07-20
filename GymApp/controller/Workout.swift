@@ -30,5 +30,10 @@ class Workout: Identifiable {
             return false
         }
     }
+    func endWorkout(){
+        for exercise in exercises {
+            exercise.endWorkout()
+        }
+    }
 }
 

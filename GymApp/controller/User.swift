@@ -49,7 +49,12 @@ class User {
         return workouts[currentWorkoutIndex]
     }
     func endWorkout() -> TimeInterval{
+        if getCurrentWorkout() == nil{
+            print("ended workout without starting it")
+            return TimeInterval()
+        }
         currentWorkoutIndex = -1
+        getCurrentWorkout()!.endWorkout()
         return WorkoutStart.distance(to: Date.now)
     }
     func isWorkingout() -> Bool{

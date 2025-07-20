@@ -50,9 +50,7 @@ struct ExerciseBuilder: View {
                     }
                 }
                 Button("Add Set"){
-                    reps.append(1);
-                    sets+=1;
-                    weight.append(0.0);
+                    exercise.addSet()
                 }
             }.onAppear(){
                 name = exercise.name

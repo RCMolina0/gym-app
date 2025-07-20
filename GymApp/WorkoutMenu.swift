@@ -174,6 +174,7 @@ struct DonePopup: View{
             Text("You workout out for \(Duration.seconds(time).formatted(.units(allowed: [.minutes,.seconds],width: .wide)))")
         }.onAppear(){
             trigger += 1
+            
         }
     }
 }
