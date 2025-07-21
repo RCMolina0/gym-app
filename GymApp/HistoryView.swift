@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import Charts
 
 struct HistoryView: View {
     @Query var user: [User] //saved workouts
@@ -14,8 +15,8 @@ struct HistoryView: View {
     @State var isNavigationActive = false
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
     var body: some View {
+        Text("History").font(.title2)
             NavigationView{
-                //Text("History").font(.title2)
                 LazyVGrid(columns: columns){
                     ForEach(user.first!.workouts){ workout in
                         Button{
@@ -24,9 +25,14 @@ struct HistoryView: View {
                         }label:{
                             RoundedRectangle(cornerRadius: 20).fill(.white).stroke(.customGray)
                                 .frame(maxWidth: .infinity).aspectRatio(1, contentMode: .fit)
-                                .overlay(Image(systemName: "chart.line.uptrend.xyaxis").resizable().scaledToFit().containerRelativeFrame(.horizontal){ size,axis in
-                                    size * 0.25
-                                })
+                                .overlay{
+                                    VStack{
+                                        Image(systemName: "chart.line.uptrend.xyaxis").resizable().scaledToFit().containerRelativeFrame(.horizontal){ size,axis in
+                                            size * 0.25
+                                        }
+                                        Text(workout.name)
+                                    }
+                                }
                         }
                     }
                 }.padding()
@@ -57,7 +63,18 @@ struct WorkoutHistoryView: View{
 struct ExerciseHistoryView: View{
     @State var exercise: Exercise
     var body: some View{
-        Text("hi")
+        VStack{
+            Text("One Rep max History").font(.title)
+            Spacer()
+            Chart{
+                ForEach(exercise.OneRepMaxAlgo().first!, id: \.date){item in
+                    LineMark(
+                        x: .value("Date", item.date),
+                        y: .value("One Rep Max", item.value)
+                    )
+                }
+            }.frame(maxWidth: .infinity).aspectRatio(1, contentMode: .fit)
+        }.padding()
     }
 }
 

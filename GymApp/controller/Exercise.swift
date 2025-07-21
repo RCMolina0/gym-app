@@ -62,22 +62,33 @@ public class Exercise: Identifiable{
         }
         return false
     }
-    func addSet(){
-        sets+=1
-        reps.append(1)
-        weight.append(0.0)
-    }
     func endWorkout(){
-        for i in 0...sets{
+        for i in 0...sets-1{
             if i < weightHistory.count{
                 weightHistory[i].append(weight[i])
                 repHistory[i].append(reps[i])
             }else{
+                print(i)
                 weightHistory.append([weight[i]])
                 repHistory.append([reps[i]])
             }
         }
         dateHistory.append(Date.now)
     }
-    
+    //uses epley formula
+    func OneRepMaxAlgo() -> [[IntOverDate]]{
+        var toReturn: [[IntOverDate]] = [[]]
+        if weightHistory == [[]]{
+            return [[]]
+        }
+        print("weightHistory is \(weightHistory.count)")
+        print("repHistory is \(repHistory.count)")
+        for j in 0...self.weightHistory.count-1{
+            for i in 0...self.weightHistory[j].count-1{
+                let a = self.weightHistory[j][i] * (Double)(1 + 30/(self.repHistory[j][i]))
+                toReturn[j].append(.init(value: Int(floor(a)), date: dateHistory[i]))
+            }
+        }
+        return toReturn
+    }
 }
